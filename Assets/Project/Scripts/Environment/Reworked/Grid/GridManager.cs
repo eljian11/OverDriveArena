@@ -1,0 +1,42 @@
+using System.Collections.Generic;
+using Project.Scripts.Room.Reworked;
+using UnityEngine;
+
+namespace Project.Scripts.Environment.Reworked.Grid
+{
+    public sealed class GridManager : MonoBehaviour
+    {
+        [SerializeField] private MeshFilter _meshFilter;
+
+        private IGridPlacementSystem _gridPlacementSystem = new EmptyGridPlacementSystem(); 
+        private IGridVisualizer _gridVisualizer = new EmptyGridVisualizer(); 
+        private IGridCreation _gridCreation = new EmptyGridCreation();
+        public IGridPlacementSystem GridPlacementSystem => this._gridPlacementSystem;
+        public IGridVisualizer GridVisualizer => this._gridVisualizer;
+
+        private void Awake() // still needs to be cleaned, needs in bootscene
+        {
+            var gridSie = new Vector2Int(10, 10);
+            var tileSize = 1f; // all tiles are 1x1
+
+            this._gridPlacementSystem = new GridPlacementSystem();
+            this._gridCreation = new GridCreation(gridSie);
+            this._gridVisualizer = new GridVisualizer();
+
+            var grids = CreateGrid(gridSie);
+
+            this._gridPlacementSystem.Initialize(ref grids, tileSize);
+            this._gridVisualizer.Initialize(ref grids, tileSize, this._meshFilter);
+        }
+
+        private Dictionary<Vector2Int, CellData> CreateGrid(Vector2Int gridSize)
+        {
+            return this._gridCreation.CreateGrid();
+        }
+
+        public void IsEditMode(bool isEditMode)
+        {
+            this._gridVisualizer.SetVisibility(isEditMode);
+        }
+    }
+}
