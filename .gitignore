@@ -2,3 +2,10 @@ Library
 Logs
 ProjectSettings
 UserSettings
+Temp
+.idea
+*.csproj
+OverDrive.sln
+obj
+*.csproj
+*.sln
